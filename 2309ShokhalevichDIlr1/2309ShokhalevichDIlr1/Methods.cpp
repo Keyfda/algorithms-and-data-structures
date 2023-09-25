@@ -100,17 +100,17 @@ void AddBeg(list*& head, list*& cur, list*& last)
     curnew->next = cur;       //устанавливаем указатель с нового элемента на бывшую голову
    
 
-    for (int i = 1; i < ElAmount; i++)    
+    for (int i = 1; i < ElAmount; i++)     
     {
-        cin >> el;
-        list* tmp = new list;
-        curnew->next = tmp;
-        curnew = tmp;
-        curnew->data = el;
+        cin >> el;              //ввод нового элемента
+        list* tmp = new list;   //выделение памяти под новый элемент списка
+        curnew->next = tmp;         //выделение следующему элементу памяти
+        curnew = tmp;               //выделяем элементу память
+        curnew->data = el;          //присваиваем новому элементу списка передаваемое значение
     }
 
-    head = headnew;
-    curnew->next = cur;
+    head = headnew;            //присваиваем голове новое значение
+    curnew->next = cur;        //указатель на следующий элемент
 }
 
 //3
@@ -118,10 +118,10 @@ void DeleteLast(list*& cur, list*& last)
 {
     system("cls");
 
-    while (cur->next != last)
+    while (cur->next != last)       //поиск предпоследнего элемента
         cur = cur->next;
-    last = cur;
-    delete cur->next;
+    last = cur;                    //меняем указатель, предпоследний теперь считается последним
+    delete cur->next;              // удаляем последний
     cur->next = nullptr;
 }
 
@@ -129,11 +129,11 @@ void DeleteLast(list*& cur, list*& last)
 void DeleteFirst(list*& head)
 {
     system("cls");
-    list* cur = head;
+    list* cur = head;              //создаем новый узел и присваиваем ему значение головы
 
-    cur = head;    
-    head = head->next;   
-    delete cur;
+  //  cur = head;                   
+    head = head->next;             //присваиваем голове значение следующего элемента
+    delete cur;                    //удаляем голову
 }
 
 //5
@@ -141,52 +141,53 @@ void AddByIndex(list*& head)
 {
 
     system("cls");
-    list* cur = head;
+    list* cur = head;            //создаем новый узел и присваиваем ему значение головы
+
     if (cur == nullptr)
     {
         cout << "The list is empty.\n";
         return;
     }
 
-    int index;
+    int index;                                                //вводим индекс перед которым надо вставить передаваемое значение
     cin >> index;
 
-    for (int i = 0; i < index-1; i++)
+    for (int i = 0; i < index-1; i++)                        //поиск элемента с заданным индексом
     {
         cur = cur->next;
-        if (cur == nullptr)
+        if (cur == nullptr)                                  //проверка на существование такого элемента
         {
             cout << "There's no element with this index";
             return;
         }
     }
 
-    list* tmpprev = new list;
-    list* tmp = new list;
-    list* tmpnext = new list;
+    list* tmpprev = new list;                //выделение
+    list* tmp = new list;                    //памяти
+    list* tmpnext = new list;                //
     
 
-    int el;
+    int el;                                  //передаваемое значение
     cin >> el; 
 
-    tmpprev = cur->prev;
-    tmpnext = cur;
+    tmpprev = cur->prev;                    //создаем указатель на предыдущий элемент списка
+    tmpnext = cur;                          //создаем указатель на элемент спсика с заданным индексом
 
-    if (tmpprev == nullptr)
+    if (tmpprev == nullptr)                 //если элемент под индексом 1
     {
-        head = tmp;
-        cur->prev = tmp;
-        tmp->next = cur;
-        tmp->data = el;
+        head = tmp;                         //голове присваиваем значение нового узла
+        cur->prev = tmp;                    //указатель с предыдущего элемента на новое значение
+        tmp->next = cur;                    //указатель с нового узла на элемент списка с заданным индексом(уже + 1)
+        tmp->data = el;                     //присваиваем новому узлу передаваемое значение
     }
-    else
+    else                                    //если элемент в середине списка
     {
-         tmpprev->next = tmp;
-         tmp->data = el;
-         tmp->next = tmpnext;
+         tmpprev->next = tmp;               //указатель на следующий элемент после предыдущего(по отношению к cur)
+         tmp->data = el;                    //присваиваем новому узлу передаваемое значение
+         tmp->next = tmpnext;               //указатель с узла на элемент списка с заданным индексом
     }
 
-    if (tmpnext == nullptr) cur = tmp;
+    if (tmpnext == nullptr) cur = tmp;      //если элемент последний в списке 
  }
 
 //6
@@ -194,7 +195,7 @@ void GetByIndex(list*& head)
 {
    
     system("cls");
-    list* cur = head;
+    list* cur = head;                   //создаем новый узел и присваиваем ему значение головы
 
     if (head == nullptr)
     {
@@ -202,28 +203,28 @@ void GetByIndex(list*& head)
             return;
     }
 
-    int index;
+    int index;                          //ввод индекса
     cin >> index;
     
     
 
-    for (int i = 1; i < index; i++)
+    for (int i = 1; i < index; i++)            //поиск элемента с заданным индексом
     {
         cur = cur->next;
-        if (cur == nullptr)
+        if (cur == nullptr)                     // проверка на наличие элемента с таким индексом
         {
             cout << "There's no element with this index";
             return;
         }
     }
-    cout << cur->data;
+    cout << cur->data;                       //если нашли, выводим элемент с заданным индексом
 }
 
 //7
 void DeleteByIndex(list*& head)
 {
     system("cls");
-    list* cur = head;
+    list* cur = head;                              //создаем новый узел и присваиваем ему значение головы
 
     if (cur == nullptr)
     {
@@ -231,22 +232,22 @@ void DeleteByIndex(list*& head)
         return;
     }
 
-    int index;
+    int index;                       //ввод индекса
     cin >> index;
 
-    for (int i = 1; i < index-1; i++)
+    for (int i = 1; i < index-1; i++)        //поиск элемента с заданным индексом
     {
         cur = cur->next;
-        if (cur == nullptr)
+        if (cur == nullptr )                  //проверка на наличие елемента с таким индексом
         {
             cout << "There's no element with this index";
             return;
         }
     }
  
-    list* tmp = new list;
-    tmp = cur->next;           
-    cur->next = tmp->next;   
+    list* tmp = new list;               //выделение памяти для нового узла
+    tmp = cur->next;                    //присваиваем новому узлу значение следующего за элементом с заданным индексом
+    cur->next = tmp->next;              //присваиваем следующему индексу значение следющего за на новым узлом элемента, то есть на следующий полсе элемента  с заданным индексом
     delete tmp;
 }
 
@@ -255,24 +256,24 @@ void GetSize(list*& head)
 {
 
     system("cls");
-    list* cur = head;
+    list* cur = head;                                       //создаем новый узел и присваиваем ему значение головы
 
 
-    if (cur == nullptr)
+    if (cur == nullptr)                 
     {
         cout << "The list is empty.\n";
         return;
     }
 
     int size = 1;
-    while (cur->next != nullptr)
+    while (cur->next != nullptr)          //проходимся до последнего элемента, с каждым проходом увеличиваем размер на 1
     {
         
         size++;
         cur = cur->next;
     }
 
-    cout << "Size of this list is " << size;
+    cout << "Size of this list is " << size;   
 }
 
 //9
@@ -281,9 +282,9 @@ void DeleteList(list*& head, list*& cur, list*& last)
 
     system("cls");
 
-    cur = head;
+    cur = head;       //присваиваем узлу значение головы
 
-    list* prv = new list;
+    list* prv = new list;            
 
     cout << "\n\n";
    
@@ -316,7 +317,7 @@ void DeleteList(list*& head, list*& cur, list*& last)
 void ReplaceByIndex(list*& head)
 {
     system("cls");
-    list* cur = head;
+    list* cur = head;                                 //создаем новый узел и присваиваем ему значение головы
 
     if (cur == nullptr)
     {
@@ -392,8 +393,8 @@ void AddListByIndex(list*& head, list*& head2)
     AnotherList(head2);
 
     list* tmp = new list;
-    list* cur = head;
-    list* cur2 = head2;
+    list* cur = head;                            //создаем новый узел и присваиваем ему значение головы 1 списка
+    list* cur2 = head2;                            //создаем новый узел и присваиваем ему значение головы 2 списка
 
     if (cur == nullptr)
     {
@@ -467,7 +468,7 @@ void AddListEnd(list*& head, list*& head2)
     AnotherList(head2);
 
     list* tmp, * tmp1 = new list;
-    list* cur = head;
+    list* cur = head;                              //создаем новый узел и присваиваем ему значение головы
 
     if (cur == nullptr)
     {
@@ -496,7 +497,7 @@ void AddListBeg(list*& head, list*& head2)
  
     list* newtail = new list;
     list* tmp = new list;
-    list* cur = head2;
+    list* cur = head2;                         //создаем новый узел и присваиваем ему значение головы 2 списка
 
     if (check == nullptr)
     {
@@ -526,9 +527,9 @@ void CheckIsIn(list*& head, list*& head2)
 
     AnotherList(head2);
 
-    list* cur1 = head;
-    list* cur2 = head2;
-    
+    list* cur1 = head;                         //создаем новый узел и присваиваем ему значение головы 1 списка
+    list* cur2 = head2;                           //создаем новый узел и присваиваем ему значение головы 2 списка
+     
     if (cur1 == nullptr)
     {
         cout << "The list is empty.\n";
@@ -574,8 +575,8 @@ void FindIndexStart(list*& head, list*& head2)
 
     AnotherList(head2);
 
-    list* cur1 = head;
-    list* cur2 = head2;
+    list* cur1 = head;                                //создаем новый узел и присваиваем ему значение головы 1 списка
+    list* cur2 = head2;                             //создаем новый узел и присваиваем ему значение головы 2 списка
 
     if (cur1 == nullptr)
     {
@@ -627,8 +628,8 @@ void FindIndexEnd(list*& head,list*& head2)
 
     AnotherList(head2);
 
-    list* cur1 = head;
-    list* cur2 = head2;
+    list* cur1 = head;                //создаем новый узел и присваиваем ему значение головы 1 списка
+    list* cur2 = head2;                 //создаем новый узел и присваиваем ему значение головы 2 списка
 
     if (cur1 == nullptr)
     {
@@ -692,12 +693,12 @@ void FindIndexEnd(list*& head,list*& head2)
 }
 
 
-//19                    //не сделана
+//19        ////////////////////////////////////////////////////////////////           не сделана
 void Swap(list*& head)
 {
     system("cls");
 
-    list* tmp1 = head;
+    list* tmp1 = head;              
     list* tmp2 = head;
     list* c = new list;
 
