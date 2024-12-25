@@ -11,77 +11,79 @@ struct TreeNode {
     TreeNode* left;
     TreeNode* right;
 
-    TreeNode(int val) {
-        data = val;
-        left = nullptr;
-        right = nullptr;
-    }
+    TreeNode(int val) : data(val), left(nullptr), right(nullptr) {}
 };
 
 TreeNode* insert(TreeNode* root, int val) {
-    if (root == nullptr) {
-        return new TreeNode(val);
-    }
-    else {
-        if (val < root->data) {
-            root->left = insert(root->left, val);
-        }
-        else {
-            root->right = insert(root->right, val);
-        }
-        return root;
-    }
+    if (root == nullptr) return new TreeNode(val);
+    if (val < root->data) root->left = insert(root->left, val);
+    else root->right = insert(root->right, val);
+    return root;
 }
 
-bool BinSearch(TreeNode* root, int val) {
-    if (root == nullptr) {
-        return false;
-    }
-    else if (root->data == val) {
-        return true;
-    }
-    else if (val < root->data) {
-        return BinSearch(root->left, val);
-    }
-    else {
-        return BinSearch(root->right, val);
-    }
-}
-
-void inorderTraversal(TreeNode* root) {
+void inorder(TreeNode* root) {
     if (root != nullptr) {
-        inorderTraversal(root->left);
-        std::cout << root->data << " ";
-        inorderTraversal(root->right);
+        inorder(root->left);
+      //  cout << root->data << " ";
+        inorder(root->right);
     }
 }
 
 int height(TreeNode* root) {
-    if (root == nullptr)
-        return 0;
-    int leftHeight = height(root->left);
-    int rightHeight = height(root->right);
-   
-    return max(leftHeight, rightHeight) + 1;
+    if (root == nullptr) return 0;
+    return max(height(root->left), height(root->right)) + 1;
 }
 
-void printGivenLevel(TreeNode* root, int level) {
-    if (root == nullptr)
-        return;
-    if (level == 1) {
-        std::cout << root->data << " ";
-    }
+void printLevel(TreeNode* root, int level) {
+    if (root == nullptr) return;
+    if (level == 1) cout << root->data << " ";
     else if (level > 1) {
-        printGivenLevel(root->left, level - 1);
-        printGivenLevel(root->right, level - 1);
+       // printLevel(root->left, level - 1);
+       // printLevel(root->right, level - 1);
     }
 }
 
 void levelOrder(TreeNode* root) {
     int h = height(root);
     for (int i = 1; i <= h; i++) {
-        printGivenLevel(root, i);
+        printLevel(root, i);
     }
+}
+
+TreeNode* minValueNode(TreeNode* node) {
+    TreeNode* current = node;
+    while (current && current->left != nullptr) {
+        current = current->left;
+    }
+    return current;
+}
+
+TreeNode* deleteNode(TreeNode* root, int val) {
+    if (root == nullptr) return root;
+
+    if (val < root->data) {
+        root->left = deleteNode(root->left, val);
+    }
+    else if (val > root->data) {
+        root->right = deleteNode(root->right, val);
+    }
+    else {
+        if (root->left == nullptr) {
+            TreeNode* temp = root->right;
+            delete root;
+            return temp;
+        }
+        else if (root->right == nullptr) {
+            TreeNode* temp = root->left;
+            delete root;
+            return temp;
+        }
+
+        TreeNode* temp = minValueNode(root->right);
+        root->data = temp->data;
+        root->right = deleteNode(root->right, temp->data);
+    }
+    return root;
 }
 
 #endif

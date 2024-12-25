@@ -10,87 +10,112 @@ struct Node {
     Node* left;
     Node* right;
     int height;
+
+    Node(int val) : key(val), left(nullptr), right(nullptr), height(1) {}
 };
 
 int height(Node* node) {
-    if (node == nullptr)
-        return 0;
-  
-    return node->height;
-}
-
-int max(int a, int b) {
-    return (a > b) ? a : b;
-}
-
-Node* newNode(int key) {
-    Node* node = new Node();
-    node->key = key;
-    node->left = nullptr;
-    node->right = nullptr;
-    node->height = 1;
-    return node;
-}
-
-Node* rightRotate(Node* node) {
-    Node* leftChild = node->left;
-    Node* subtree = leftChild->right;
-
-    leftChild->right = node;
-    node->left = subtree;
-
-    node->height = max(height(node->left), height(node->right)) + 1;
-    leftChild->height = max(height(leftChild->left), height(leftChild->right)) + 1;
-
-    return leftChild;
-}
-
-Node* leftRotate(Node* node) {
-    Node* rightChild = node->right;
-    Node* subtree = rightChild->left;
-
-    rightChild->left = node;
-    node->right = subtree;
-
-    node->height = max(height(node->left), height(node->right)) + 1;
-    rightChild->height = max(height(rightChild->left), height(rightChild->right)) + 1;
-
-    return rightChild;
+    return (node == nullptr) ? 0 : node->height;
 }
 
 int getBalance(Node* node) {
-    if (node == nullptr)
-        return 0;
+    if (node == nullptr) return 0;
     return height(node->left) - height(node->right);
 }
 
-Node* avlinsert(Node* root, int key) {
-    if (root == nullptr)
-        return newNode(key);
+Node* rightRotate(Node* y) {
+    Node* x = y->left;
+    Node* T2 = x->right;
 
-    if (key < root->key)
-        root->left = avlinsert(root->left, key);
-    else if (key > root->key)
-        root->right = avlinsert(root->right, key);
-    else
-        return root;
+    x->right = y;
+    y->left = T2;
+
+    y->height = max(height(y->left), height(y->right)) + 1;
+    x->height = max(height(x->left), height(x->right)) + 1;
+
+    return x;
+}
+
+Node* leftRotate(Node* x) {
+    Node* y = x->right;
+    Node* T2 = y->left;
+
+    y->left = x;
+    x->right = T2;
+
+    x->height = max(height(x->left), height(x->right)) + 1;
+    y->height = max(height(y->left), height(y->right)) + 1;
+
+    return y;
+}
+
+Node* avlInsert(Node* node, int key) {
+    if (node == nullptr) return new Node(key);
+
+    if (key < node->key) node->left = avlInsert(node->left, key);
+    else if (key > node->key) node->right = avlInsert(node->right, key);
+    else return node;
+
+    node->height = 1 + max(height(node->left), height(node->right));
+
+    int balance = getBalance(node);
+
+    if (balance > 1 && key < node->left->key) return rightRotate(node);
+    if (balance < -1 && key > node->right->key) return leftRotate(node);
+    if (balance > 1 && key > node->left->key) {
+        node->left = leftRotate(node->left);
+        return rightRotate(node);
+    }
+    if (balance < -1 && key < node->right->key) {
+        node->right = rightRotate(node->right);
+        return leftRotate(node);
+    }
+
+    return node;
+}
+
+Node* minValueNode(Node* node) {
+    Node* current = node;
+    while (current && current->left != nullptr) {
+        current = current->left;
+    }
+    return current;
+}
+
+Node* avlDelete(Node* root, int key) {
+    if (root == nullptr) return root;
+
+    if (key < root->key) {
+        root->left = avlDelete(root->left, key);
+    }
+    else if (key > root->key) {
+        root->right = avlDelete(root->right, key);
+    }
+    else {
+        if (root->left == nullptr || root->right == nullptr) {
+            Node* temp = root->left ? root->left : root->right;
+            delete root;
+            return temp;
+        }
+        Node* temp = minValueNode(root->right);
+        root->key = temp->key;
+        root->right = avlDelete(root->right, temp->key);
+    }
 
     root->height = 1 + max(height(root->left), height(root->right));
 
     int balance = getBalance(root);
 
-    if (balance > 1 && key < root->left->key)
-        return rightRotate(root);
+    if (balance > 1 && getBalance(root->left) >= 0) return rightRotate(root);
 
-    if (balance < -1 && key > root->right->key)
-        return leftRotate(root);
+    if (balance < -1 && getBalance(root->right) <= 0) return leftRotate(root);
 
-    if (balance > 1 && key > root->left->key) {
+    if (balance > 1 && getBalance(root->left) < 0) {
         root->left = leftRotate(root->left);
         return rightRotate(root);
     }
 
-    if (balance < -1 && key < root->right->key) {
+    if (balance < -1 && getBalance(root->right) > 0) {
         root->right = rightRotate(root->right);
         return leftRotate(root);
     }
@@ -98,34 +123,26 @@ Node* avlinsert(Node* root, int key) {
     return root;
 }
 
-
-void avlinorderTraversal(Node* node) {
-    if (node != nullptr) {
-        avlinorderTraversal(node->left);
-        cout << node->key << " ";
-        avlinorderTraversal(node->right);
+void avlInorder(Node* root) {
+    if (root != nullptr) {
+        avlInorder(root->left);
+        //cout << root->key << " ";
+        avlInorder(root->right);
     }
 }
 
-void bfsAVLTree(Node* root) {
-    if (root == nullptr) {
-        return;
-    }
+void bfsAVL(Node* root) {
+    if (root == nullptr) return;
+    queue<Node*> q;
+    q.push(root);
 
-    queue<Node*> queue;
-    queue.push(root);
+    while (!q.empty()) {
+        Node* current = q.front();
+        q.pop();
+       // cout << current->key << " ";
 
-    while (!queue.empty()) {
-        Node* node = queue.front();
-        queue.pop();
-        cout << node->key << " ";
-
-        if (node->left) {
-            queue.push(node->left);
-        }
-        if (node->right) {
-            queue.push(node->right);
-        }
+        if (current->left) q.push(current->left);
+        if (current->right) q.push(current->right);
     }
 }
 

@@ -6,160 +6,150 @@
 #include <ctime>
 #include <algorithm>
 #include <chrono>
+#include <functional>
 
-void preorderTraversal(TreeNode* root) 
-{
-    if (root == nullptr)
-        return;
-    cout << root->data << " ";
-    preorderTraversal(root->left);
-    preorderTraversal(root->right);
+using namespace std;
+using namespace chrono;
+
+void measureExecTime(const function<void()>& func) {
+    auto start = high_resolution_clock::now();
+    func();
+    auto end = high_resolution_clock::now();
+
+    auto duration = duration_cast<nanoseconds>(end - start);
+    cout.precision(10);
+    cout << fixed << duration.count() << " " ;
 }
 
-void AVLpreorderTraversal(Node* root) 
-{
-    if (root == nullptr)
-        return;
-    cout << root->key << " ";
-    AVLpreorderTraversal(root->left);
-    AVLpreorderTraversal(root->right);
+void preorder(TreeNode* root) {
+    if (root == nullptr) return;
+   // cout << root->data << " ";
+    preorder(root->left);
+    preorder(root->right);
 }
 
-void postorderTraversal(TreeNode* root) 
-{
-    if (root == nullptr)
-        return;
-    postorderTraversal(root->left);
-    postorderTraversal(root->right);
-    cout << root->data << " ";
+void AVLpreorder(Node* root) {
+    if (root == nullptr) return;
+  //  cout << root->key << " ";
+    AVLpreorder(root->left);
+    AVLpreorder(root->right);
 }
 
-void AVLpostorderTraversal(Node* root) 
-{
-    if (root == nullptr)
-        return;
-    AVLpostorderTraversal(root->left);
-    AVLpostorderTraversal(root->right);
-    cout << root->key << " ";
+void postorder(TreeNode* root) {
+    if (root == nullptr) return;
+    postorder(root->left);
+    postorder(root->right);
+  //  cout << root->data << " ";
 }
 
-int main() 
-{
-    TreeNode* root = nullptr;
-    RedBlackTree tree;
-    Node* root3 = nullptr;
+void AVLpostorder(Node* root) {
+    if (root == nullptr) return;
+    AVLpostorder(root->left);
+    AVLpostorder(root->right);
+   // cout << root->key << " ";
+}
 
+int main() {
+    TreeNode* bsRoot = nullptr;
+    RBTree rbTree;
+    Node* avlRoot = nullptr;
 
     cout << "Check trees\n\n";
     const int N = 9999;
     int k[N + 1];
 
-    for (int i = 0; i < 50; i++)
-    {
+    /*for (int i = 0; i < 100; i++) {
+        
+    }*/
+
+    int heightBs = height(bsRoot);
+
+  //  cout << "Inorder: \n\n";
+
+   // cout << "BS TREE : \n";
+    
+  //  cout << endl;
+
+    for (int i = 0; i < 100; i++) {
         k[i] = rand();
-        root = insert(root, k[i]);
+        bsRoot = insert(bsRoot, k[i]);
+        avlRoot = avlInsert(avlRoot, k[i]);
+        rbTree.rbInsert(k[i]);
     }
-   
-   int heightbs = height(root);
- 
-   cout << "Inorder: \n\n";
- 
-   cout << "BINARY TREE : \n";
-    inorderTraversal(root);
-    cout << endl;
-    for (int i = 0; i < 50; i++)
-    {
-        root3 = avlinsert(root3, k[i]);
-    }
-    int heightavl = root3->height;
-    
-    cout << "AVL TREE:  \n";
-   
-    avlinorderTraversal(root3);
+
+   // measureExecTime([&]() {  bsRoot = insert(bsRoot, 2); });
+    measureExecTime([&]() {  avlRoot = avlInsert(avlRoot, 2); });
+    measureExecTime([&]() {  rbTree.rbInsert(2); });
+    int heightAvl = avlRoot->height;
+
+    inorder(bsRoot);
+   // cout << "AVL TREE:  \n";
+    avlInorder(avlRoot);
     cout << endl;
 
-    for (int i = 0; i < 50; i++)
-    {
-        tree.RBinsert(k[i]);
-    }
-   
-   
-    cout << "RED BLACK TREE:  \n";
+    /*for (int i = 0; i < 100; i++) {
+        
+    }*/
 
-   auto start = chrono::high_resolution_clock::now();
-    tree.inorder();
-    cout << endl;
-    auto end = chrono::high_resolution_clock::now();
-    chrono::nanoseconds duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
-    cout.precision(10);
-    cout << ", " << fixed << duration.count();
+    cout << "RB TREE Inorder Traversal: ";
+   // measureExecTime([&]() { rbTree.inorder(); });
 
-    cout << "RED BLACK TREE:  \n";
+    cout << "RB TREE Preorder Traversal: ";
+   // measureExecTime([&]() { rbTree.preorder(); });
 
-    start = chrono::high_resolution_clock::now();
-    tree.preorder();
-     end = chrono::high_resolution_clock::now();
-    duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
-    cout.precision(10);
-    cout << ", " << fixed << duration.count();
+    cout << "BS TREE Preorder Traversal: ";
+   // measureExecTime([&]() { preorder(bsRoot); });
 
+    cout << "AVL TREE Preorder Traversal: ";
+   // measureExecTime([&]() { AVLpreorder(avlRoot); });
 
-    start = chrono::high_resolution_clock::now();
-    preorderTraversal(root);
-    cout << endl;
-    end = chrono::high_resolution_clock::now();
-    duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
-    cout.precision(10);
-    cout << ", " << fixed << duration.count();
+    cout << "RB TREE Postorder Traversal: ";
+  //  measureExecTime([&]() { rbTree.postorder(); });
 
-    start = chrono::high_resolution_clock::now();
-    AVLpreorderTraversal(root3);
-    end = chrono::high_resolution_clock::now();
-    duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
-    cout.precision(10);
-    cout << ", " << fixed << duration.count();
+    cout << "BS TREE Postorder Traversal: ";
+   // measureExecTime([&]() { postorder(bsRoot); });
 
-    
-    start = chrono::high_resolution_clock::now();
-    tree.postorder();
-    end = chrono::high_resolution_clock::now();
-    duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
-    cout.precision(10);
-    cout << ", " << fixed << duration.count();
+    cout << "AVL TREE Postorder Traversal: ";
+   // measureExecTime([&]() { AVLpostorder(avlRoot); });
 
-    start = chrono::high_resolution_clock::now();
-    postorderTraversal(root);
-    cout << endl;
-    end = chrono::high_resolution_clock::now();
-    duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
-    cout.precision(10);
-    cout << ", " << fixed << duration.count();
+    cout << "BS TREE Level Order Traversal: ";
+  //  measureExecTime([&]() { levelOrder(bsRoot); });
 
-    start = chrono::high_resolution_clock::now();
-    AVLpostorderTraversal(root3);
-    cout << endl;
-    end = chrono::high_resolution_clock::now();
-   duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
-    cout.precision(10);
-    cout << ", " << fixed << duration.count();
+    cout << "RB TREE Level Order Traversal: ";
+   // measureExecTime([&]() { rbTree.levelOrder(); });
 
-    start = chrono::high_resolution_clock::now();
-    levelOrder(root);
-    cout << endl;
-    end = chrono::high_resolution_clock::now();
-    duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
-    cout.precision(10);
-    cout << ", " << fixed << duration.count();
+    cout << "AVL TREE Level Order Traversal: ";
+  //  measureExecTime([&]() { bfsAVL(avlRoot); });
 
+    /* for (int i = 0; i < 5; i++) {
+            bsRoot = deleteNode(bsRoot, k[i]);
+        }*/
+    bsRoot = deleteNode(bsRoot, k[2]);
+   // cout << "After Deletion in BS TREE (Inorder): ";
+   // measureExecTime([&]() { inorder(bsRoot); });
 
-    start = chrono::high_resolution_clock::now();
-    tree.levelOrder();
-    cout << endl;
-    end = chrono::high_resolution_clock::now();
-    duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
-    cout.precision(10);
-    cout << ", " << fixed << duration.count();
+    /* for (int i = 0; i < 5; i++) {
+         avlRoot = avlDelete(avlRoot, k[i]);
+     }*/
+     avlRoot = avlDelete(avlRoot, k[4]);
+  //  cout << "After Deletion in AVL TREE (Inorder): ";
+    measureExecTime([&]() { avlInorder(avlRoot); });
 
-    bfsAVLTree(root3);
+   /* for (int i = 0; i < 100; i++) {
+        rbTree.rbDelete(k[i]);
+    }*/
+    rbTree.rbDelete(k[4]);
+   // cout << "After Deletion in RB TREE (Inorder): ";
+    measureExecTime([&]() { rbTree.inorder(); });
+
+    int heightBsAfterDelete = height(bsRoot);
+    cout << "Height of BS TREE after deletion: " << heightBsAfterDelete << endl;
+
+    int heightAvlAfterDelete = height(avlRoot);
+    cout << "Height of AVL TREE after deletion: " << heightAvlAfterDelete << endl;
+
+    int heightRbAfterDelete = rbTree.getHeight();
+    cout << "Height of RB TREE after deletion: " << heightRbAfterDelete << endl;
+
+    return 0;
 }
-
