@@ -2,12 +2,12 @@
 
 void AnotherList(list*& head2)
 {
-    int ElAmount1;        //количество элементов списка
-    list* cur = new list; // выделяем память
+    int ElAmount2;   
+    list* cur = new list; 
     cout  << "\n\nType the amount of elements you want to add to the list(only natural numbers):    ";
-    cin >> ElAmount1; 
+    cin >> ElAmount2; 
 
-    if (ElAmount1 == 0) 
+    if (ElAmount2 == 0) 
     {
         cout << "\n\nInvalid size! Only natural numbers! Try again.";
         AnotherList(head2);
@@ -17,62 +17,82 @@ void AnotherList(list*& head2)
     int el;
     cout << "\nEnter your list here:  ";
 
-    cin >> el;
+    if (ElAmount2 > 10)
+        el = 1 + rand() % 9;
+    else
+        cin >> el; 
     head2->data = el;
     cur = head2;
     head2->prev = nullptr;
 
-    for (int i = 1; i < ElAmount1; i++)
+    for (int i = 1; i < ElAmount2; i++)
     {
-        std::cin >> el;
+        if (ElAmount2 > 10)
+
+            el = 1 + rand() % 9;
+        else
+            cin >> el;
+
         list* tmp = new list;
+
         cur->next = tmp;
         tmp->prev = cur;
         cur = tmp;
         cur->data = el;
+
     }
-   
 
      cur = head2;
 }
 
 //1
-void AddEnd(list*& cur, list*& last) 
+void AddEnd(list*& head, list*& last, int el) 
 {
-    system("cls");  //очистка консольного меню, встречается во всех функциях
+    int ElAmount;
+  
+    auto start = chrono::high_resolution_clock::now();
 
-    list* curnew = new list;	//выделение памяти
-	curnew = last;              //передаем в новый тело значение хвоста
-
-    if (cur == nullptr)         //проверка на пустоту списка, в случае пустого возвращает в меню выбора действия, встречается почти в каждой функции
+    list* curnew = new list;  
+   
+    list*  cur = head;
+    if (cur == nullptr)       
     {
         cout << "The list is empty.\n";
-        return;                 
+        return;
     }
-    int ElAmount;              
-    int el;
-    cout << "Type the amount of elements you want to add to the list(only natural numbers):    "; //ввод кол-ва символов для вставки
-    cin >> ElAmount;
-
-    cout << "\nEnter your elements here:  ";
-
-    for (int i = 0; i < ElAmount; i++)     
+    
+    while (cur->next != nullptr)
     {
-        cin >> el;
-        list* tmp = new list;       //выделение памяти под новый элемент списка
-        curnew->next = tmp;         //выделение следующему элементу памяти
-        curnew = tmp;               //выделяем элементу память
-        curnew->data = el;          //присваиваем новому элементу списка передаваемое значение
+        cur = cur->next;
     }
-    cur = curnew;
+
     last = cur;
+    curnew = last;
+   
+  
+        
+    list* tmp = new list;       
+    curnew->next = tmp;         
+    curnew = tmp;               
+    curnew->data = el;          
+    
+    last = curnew;
+    auto end = chrono::high_resolution_clock::now();
+    chrono::nanoseconds duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
+    cout.precision(10);
+    cout << fixed << duration.count() << ", ";
+  
 	
 }
 
 //2
-void AddBeg(list*& head, list*& cur, list*& last)
+void AddBeg(list*& head, list*& cur, list*& last, int el)
 {
-    system("cls");
+    int ElAmount;
+  
+    auto start = chrono::high_resolution_clock::now();
+    list* lastcur = new list;
+    
 
     if (head == nullptr)
     {
@@ -80,68 +100,76 @@ void AddBeg(list*& head, list*& cur, list*& last)
         return;
     }
 
-    list* headnew = new list; //выделение памяти для нового элемента
-    list* curnew = new list;  //выделение памяти для нового элемента
-    curnew->next = head;      //устанавливаем указатель на следующий элемент, то есть на старую голову списка
-    cur = head;               //присваиваем значение головы к телу списка
-    head = curnew;            //присваиваем голове значение нового эелемента
-   
-
-    int ElAmount;
-    int el;
-    cout << "Type the amount of elements you want to add to the list(only natural numbers):    ";
-    cin >> ElAmount;
-
-    cout << "\nEnter your elements here:  "; 
-
-    cin >> el;
-    curnew->data = el;        //заполняем новый элемент
-    headnew = curnew;         //присваиваем новой голове значение нового элемента
-    curnew->next = cur;       //устанавливаем указатель с нового элемента на бывшую голову
-   
-
-    for (int i = 1; i < ElAmount; i++)     
+    list* headnew = new list; 
+    list* curnew = new list;  
+ 
+   list* curr = head;             
+ 
+    while (curr->next != nullptr)
     {
-        cin >> el;              //ввод нового элемента
-        list* tmp = new list;   //выделение памяти под новый элемент списка
-        curnew->next = tmp;         //выделение следующему элементу памяти
-        curnew = tmp;               //выделяем элементу память
-        curnew->data = el;          //присваиваем новому элементу списка передаваемое значение
+        curr = curr->next;
     }
+    last = curr;
+  
+    curr = head;
+    
 
-    head = headnew;            //присваиваем голове новое значение
-    curnew->next = cur;        //указатель на следующий элемент
+
+   
+ 
+    headnew->data = el;
+    headnew->next = curr;     
+
+    head = headnew;       
+    auto end = chrono::high_resolution_clock::now();
+    chrono::nanoseconds duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
+    cout.precision(10);
+    cout << fixed << duration.count() << ", ";
 }
 
 //3
-void DeleteLast(list*& cur, list*& last) 
+void DeleteLast(list*& head, list*& last) 
 {
-    system("cls");
-
-    while (cur->next != last)       //поиск предпоследнего элемента
+    list* cur = head;
+    auto start = chrono::high_resolution_clock::now();
+    while (cur->next != nullptr)
+    {    
         cur = cur->next;
-    last = cur;                    //меняем указатель, предпоследний теперь считается последним
-    delete cur->next;              // удаляем последний
+    }
+
+   cur = cur->prev;
+ 
+  list* tmp = cur->next;
+    delete tmp;             
     cur->next = nullptr;
+    auto end = chrono::high_resolution_clock::now();
+    chrono::nanoseconds duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
+    cout.precision(10);
+    cout << fixed << duration.count() << ", ";
+    
 }
 
 //4
 void DeleteFirst(list*& head)
 {
-    system("cls");
-    list* cur = head;              //создаем новый узел и присваиваем ему значение головы
+    list* cur = head;              
+    auto start = chrono::high_resolution_clock::now();
 
-  //  cur = head;                   
-    head = head->next;             //присваиваем голове значение следующего элемента
-    delete cur;                    //удаляем голову
+    cur = head;                   
+    head = head->next;            
+    delete cur;    
+
+    auto end = chrono::high_resolution_clock::now();
+    chrono::nanoseconds duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
+    cout.precision(10);
+    cout << fixed << duration.count() << ", ";
 }
 
 //5
-void AddByIndex(list*& head)
+void AddByIndex(list*& head, int index, int el)
 {
 
-    system("cls");
-    list* cur = head;            //создаем новый узел и присваиваем ему значение головы
+    list* cur = head;           
 
     if (cur == nullptr)
     {
@@ -149,53 +177,58 @@ void AddByIndex(list*& head)
         return;
     }
 
-    int index;                                                //вводим индекс перед которым надо вставить передаваемое значение
-    cin >> index;
+   
 
-    for (int i = 0; i < index-1; i++)                        //поиск элемента с заданным индексом
+    auto start = chrono::high_resolution_clock::now();
+
+    for (int i = 0; i < index-1; i++)                      
     {
         cur = cur->next;
-        if (cur == nullptr)                                  //проверка на существование такого элемента
+        if (cur == nullptr)                                 
         {
             cout << "There's no element with this index";
             return;
         }
     }
 
-    list* tmpprev = new list;                //выделение
-    list* tmp = new list;                    //памяти
-    list* tmpnext = new list;                //
+    list* tmpprev = new list;              
+    list* tmp = new list;                  
+    list* tmpnext = new list;               
     
 
-    int el;                                  //передаваемое значение
-    cin >> el; 
 
-    tmpprev = cur->prev;                    //создаем указатель на предыдущий элемент списка
-    tmpnext = cur;                          //создаем указатель на элемент спсика с заданным индексом
+    tmpprev = cur->prev;                    
+    tmpnext = cur;                         
+    tmpnext = cur;
+    
 
-    if (tmpprev == nullptr)                 //если элемент под индексом 1
+
+    if (tmpprev == nullptr)
     {
-        head = tmp;                         //голове присваиваем значение нового узла
-        cur->prev = tmp;                    //указатель с предыдущего элемента на новое значение
-        tmp->next = cur;                    //указатель с нового узла на элемент списка с заданным индексом(уже + 1)
-        tmp->data = el;                     //присваиваем новому узлу передаваемое значение
+        head = tmp;
+        cur->prev = tmp;
+        tmp->next = cur;
+        tmp->data = el;
     }
-    else                                    //если элемент в середине списка
+    else                                   
     {
-         tmpprev->next = tmp;               //указатель на следующий элемент после предыдущего(по отношению к cur)
-         tmp->data = el;                    //присваиваем новому узлу передаваемое значение
-         tmp->next = tmpnext;               //указатель с узла на элемент списка с заданным индексом
+         tmpprev->next = tmp;              
+         tmp->data = el;                    
+         tmp->next = tmpnext;              
     }
 
-    if (tmpnext == nullptr) cur = tmp;      //если элемент последний в списке 
+    if (tmpnext == nullptr) cur = tmp;     
+
+    auto end = chrono::high_resolution_clock::now();
+    chrono::nanoseconds duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
+    cout.precision(10);
+    cout << fixed << duration.count() << ", ";
  }
 
 //6
-void GetByIndex(list*& head)
+void GetByIndex(list*& head, int index)
 {
-   
-    system("cls");
-    list* cur = head;                   //создаем новый узел и присваиваем ему значение головы
+    list* cur = head;                  
 
     if (head == nullptr)
     {
@@ -203,28 +236,32 @@ void GetByIndex(list*& head)
             return;
     }
 
-    int index;                          //ввод индекса
-    cin >> index;
-    
     
 
-    for (int i = 1; i < index; i++)            //поиск элемента с заданным индексом
+    auto start = chrono::high_resolution_clock::now();
+
+    for (int i = 1; i < index; i++)           
     {
         cur = cur->next;
-        if (cur == nullptr)                     // проверка на наличие элемента с таким индексом
+        if (cur == nullptr)                    
         {
             cout << "There's no element with this index";
             return;
         }
     }
-    cout << cur->data;                       //если нашли, выводим элемент с заданным индексом
+    cout << cur->data;              
+
+    auto end = chrono::high_resolution_clock::now();
+    chrono::nanoseconds duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
+    cout.precision(10);
+    cout << fixed << duration.count() << ", ";
 }
 
 //7
-void DeleteByIndex(list*& head)
+void DeleteByIndex(list*& head, int index)
 {
-    system("cls");
-    list* cur = head;                              //создаем новый узел и присваиваем ему значение головы
+ 
+    list* cur = head;                              
 
     if (cur == nullptr)
     {
@@ -232,32 +269,48 @@ void DeleteByIndex(list*& head)
         return;
     }
 
-    int index;                       //ввод индекса
-    cin >> index;
+    
 
-    for (int i = 1; i < index-1; i++)        //поиск элемента с заданным индексом
+    auto start = chrono::high_resolution_clock::now();
+
+    for (int i = 0; i < index-1; i++)      
     {
+        
         cur = cur->next;
-        if (cur == nullptr )                  //проверка на наличие елемента с таким индексом
+        if (cur == nullptr )               
         {
             cout << "There's no element with this index";
             return;
         }
     }
  
-    list* tmp = new list;               //выделение памяти для нового узла
-    tmp = cur->next;                    //присваиваем новому узлу значение следующего за элементом с заданным индексом
-    cur->next = tmp->next;              //присваиваем следующему индексу значение следющего за на новым узлом элемента, то есть на следующий полсе элемента  с заданным индексом
-    delete tmp;
+    list* tmp = new list;          
+    if (index == 1)
+    {
+        cur = head;
+        head = head->next;           
+        delete cur;
+
+    }
+    else
+    {
+       
+        tmp = cur;
+        cur->prev->next = cur->next;
+        delete tmp;
+    }
+
+    auto end = chrono::high_resolution_clock::now();
+    chrono::nanoseconds duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
+    cout.precision(10);
+    cout << fixed << duration.count() << ", ";
 }
 
 //8
 void GetSize(list*& head)
 {
-
-    system("cls");
-    list* cur = head;                                       //создаем новый узел и присваиваем ему значение головы
-
+    list* cur = head;                                     
+    auto start = chrono::high_resolution_clock::now();
 
     if (cur == nullptr)                 
     {
@@ -266,58 +319,93 @@ void GetSize(list*& head)
     }
 
     int size = 1;
-    while (cur->next != nullptr)          //проходимся до последнего элемента, с каждым проходом увеличиваем размер на 1
+    while (cur->next != nullptr)         
     {
-        
         size++;
         cur = cur->next;
     }
 
-    cout << "Size of this list is " << size;   
+   /* cout << "Size of this list is " << size;   */
+
+    auto end = chrono::high_resolution_clock::now();
+    chrono::nanoseconds duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
+    cout.precision(10);
+    cout << fixed << duration.count() << ", ";
 }
 
 //9
 void DeleteList(list*& head, list*& cur, list*& last)
 {
+    cur = head;      
+    list* prv = new list; 
+    int count = 0;
 
-    system("cls");
-
-    cur = head;       //присваиваем узлу значение головы
-
-    list* prv = new list;            
+    while (cur != nullptr)
+    {
+        count++;
+        cur = cur->next;
+    }
+    
+    cur = head;
 
     cout << "\n\n";
    
     cout << "List before deleting: ";
-    while (cur != nullptr)
-    {       
-        cout << cur->data << " ";
-        cur = cur->next;
+    if (count <= 10)
+    {
+        while (cur != nullptr)
+        {
+            cout << cur->data << " ";
+            cur = cur->next;
+        }
     }
+    else
+        for (int i = 0; i < 10; i++)
+        {
+            cout << cur->data << " ";
+            cur = cur->next;
+        }
+
     cout << endl;
+    if( count >10)
+    cout << "Only 10 first elements were printed because the list is too big!";
+    cout << endl;
+
+    auto start = chrono::high_resolution_clock::now();
 
     cout << "List after deleting:  ";
 
     cur = head;
-
-    while (cur != nullptr)
-    {
-        prv = cur;
-        cur = cur->next;
-        delete prv;
-        prv = nullptr;
-        head = prv;
-
-        cout << prv << " ";
-    }
+    int ccount = 0;
+ 
+        while (cur != nullptr)
+        {
+            prv = cur;
+            cur = cur->next;
+            delete prv;
+            prv = nullptr;
+            head = prv;
+            ccount++;
+            if(ccount <=10)
+            cout << prv <<  " ";
+        }
+        cout << endl;
+        if(ccount >10)
+           
+        cout << "Only 10 first elements were printed because the list is too big!";
+   
     cout << "\n";
+
+    auto end = chrono::high_resolution_clock::now();
+    chrono::nanoseconds duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
+    cout.precision(10);
+    cout << fixed << duration.count() << ", ";
 }
 
 //10
-void ReplaceByIndex(list*& head)
-{
-    system("cls");
-    list* cur = head;                                 //создаем новый узел и присваиваем ему значение головы
+void ReplaceByIndex(list*& head, int index, int newel)
+{   
+    list* cur = head;                                 
 
     if (cur == nullptr)
     {
@@ -325,8 +413,8 @@ void ReplaceByIndex(list*& head)
         return;
     }
 
-    int index;
-    cin >> index;
+  
+    auto start = chrono::high_resolution_clock::now();
 
     for (int i = 1; i < index; i++)
     {
@@ -337,27 +425,34 @@ void ReplaceByIndex(list*& head)
             return;
         }
     }
-    int newel;
-    cin >> newel;
+    
     cur->data = newel;
     cout << cur->data;
+
+    auto end = chrono::high_resolution_clock::now();
+    chrono::nanoseconds duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
+    cout.precision(10);
+    cout << fixed << duration.count() << ", ";
 }
 
 //11
 void IsEmpty(list*& head)
 {
-    system("cls");
+    auto start = chrono::high_resolution_clock::now();
 
-    if (head == nullptr)
-        cout << "The list is empty.";
-    else cout << "The list is not empty.";
+    //if (head == nullptr)
+    //    cout << "The list is empty.";
+    //else cout << "The list is not empty.";
+
+    auto end = chrono::high_resolution_clock::now();
+    chrono::nanoseconds duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
+    cout.precision(10);
+    cout << fixed << duration.count() << ", ";
 }
 
 //12
 void Reverse(list*& head, list*& last)
 {
-    system("cls");
-
     list* cur, *next, *prev = nullptr;
     cur = head;
 
@@ -366,12 +461,13 @@ void Reverse(list*& head, list*& last)
         cout << "The list is empty.\n";
         return;
     }
+    auto start = chrono::high_resolution_clock::now();
  
     list* lastt = head;
 
-    while (lastt)             // ищем последний элемент
+    while (lastt)           
         lastt = lastt->next;
-    list* tmpLast = head;   // этот узел станет предпоследним в преобразованном списке
+    list* tmpLast = head;   
 
     while (cur != lastt)
     {
@@ -380,21 +476,21 @@ void Reverse(list*& head, list*& last)
         prev = cur;
         cur = next;
     }
-    tmpLast = lastt;          // за предпоследним узлом следует последний
+    tmpLast = lastt;         
    
     head = prev;
+
+    auto end = chrono::high_resolution_clock::now();
+    chrono::nanoseconds duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
+    cout.precision(10);
+    cout << fixed << duration.count() << ", ";
 }
 
 //13
-void AddListByIndex(list*& head, list*& head2)
+void AddListByIndex(list*& head, list*& head2 , int& index)
 {
-    system("cls");
-
-    AnotherList(head2);
-
     list* tmp = new list;
-    list* cur = head;                            //создаем новый узел и присваиваем ему значение головы 1 списка
-    list* cur2 = head2;                            //создаем новый узел и присваиваем ему значение головы 2 списка
+    list* cur = head;                           
 
     if (cur == nullptr)
     {
@@ -402,8 +498,7 @@ void AddListByIndex(list*& head, list*& head2)
         return;
     }
 
-    int index;
-    cin >> index;
+  
 
     for (int i = 0; i < index - 1; i++)
     {
@@ -414,28 +509,30 @@ void AddListByIndex(list*& head, list*& head2)
             return;
         }
     }
+    AnotherList(head2);
+    list* cur2 = head2;
 
     list* tmpprev = new list;
     list* tmpnext = new list;
     list* tmpprev2 = new list;
-   
+    auto start = chrono::high_resolution_clock::now();
 
     tmpprev = cur->prev;
     tmpnext = cur;
   
     if (tmpprev == nullptr)
     {
-        head = tmp;
+       
         tmp = cur2;
-        cur->prev = tmp;
+        head = tmp;
+        tmp = tmp->next;
+  
         tmpprev = head;
+        cout << tmpprev->data;
     }
     else
     {
-
-        //указатель с предыдущего элемента основного списка на следующий, уже из второго списка, элемент
-    //указатель на следующий элемент
-        tmp = cur2;              //присваиваем новому элементу значение головы второго списка
+        tmp = cur2;              
         tmp->next = cur2->next;
         
         cout << cur2->data << " ";
@@ -456,50 +553,60 @@ void AddListByIndex(list*& head, list*& head2)
 
     cur = tmp;
     if (tmpnext == nullptr) cur = tmp;
-
-
+ 
+    auto end = chrono::high_resolution_clock::now();
+    chrono::nanoseconds duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
+    cout.precision(10);
+    cout << fixed << duration.count() << ", ";
 }
 
 //14
 void AddListEnd(list*& head, list*& head2)
 {
-    system("cls");
-
-    AnotherList(head2);
-
     list* tmp, * tmp1 = new list;
-    list* cur = head;                              //создаем новый узел и присваиваем ему значение головы
+    list* cur = head;                            
 
+   
     if (cur == nullptr)
     {
         cout << "The list is empty.\n";
         return;
     }
-    cout << head2->data;
 
+    auto start = chrono::high_resolution_clock::now();
     while (cur->next != nullptr) {
         cur = cur->next;
     }
 
     tmp = cur;
+    
     cur->next = head2;
+    auto end = chrono::high_resolution_clock::now();
+    chrono::nanoseconds duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
+    cout.precision(10);
+    cout << fixed << duration.count() << ", ";
+
 
 }
 
 //15
-void AddListBeg(list*& head, list*& head2)
+void AddListBeg(list*& head, list*& head2, list*& last)
 {
-    system("cls");
-
-    AnotherList(head2);
-    
-    list* check = head;
+     AnotherList(head2);
  
+     auto start = chrono::high_resolution_clock::now();
     list* newtail = new list;
     list* tmp = new list;
-    list* cur = head2;                         //создаем новый узел и присваиваем ему значение головы 2 списка
+    list* cur = head2;                         
+    list* cur1 = head;
 
-    if (check == nullptr)
+    while (cur1->next != nullptr)
+    {
+        cur1 = cur1->next;
+    }
+    last = cur1;
+
+    if (head == nullptr)
     {
         cout << "The first list is empty.\n";
         return;
@@ -507,9 +614,9 @@ void AddListBeg(list*& head, list*& head2)
    
     newtail = head;
 
-    while (cur->next != nullptr) {
+    while (cur->next != nullptr)
+    {
         cur = cur->next;
-        head = tmp;
         cur->prev = tmp;
         tmp->next = cur;
     }
@@ -517,25 +624,25 @@ void AddListBeg(list*& head, list*& head2)
     tmp = cur;
     cur->next = newtail;
     head = head2;
+    auto end = chrono::high_resolution_clock::now();
+    chrono::nanoseconds duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
+    cout.precision(10);
+    cout << fixed << duration.count() << ", ";
       
 }
 
 //16
 void CheckIsIn(list*& head, list*& head2)
 {
-    system("cls");
-
-    AnotherList(head2);
-
-    list* cur1 = head;                         //создаем новый узел и присваиваем ему значение головы 1 списка
-    list* cur2 = head2;                           //создаем новый узел и присваиваем ему значение головы 2 списка
+    list* cur1 = head;                       
+    list* cur2 = head2;                           
      
     if (cur1 == nullptr)
     {
         cout << "The list is empty.\n";
         return;
     }
-
+    auto start = chrono::high_resolution_clock::now();
     int i = 0;
     while (cur2 != nullptr)
     {
@@ -547,43 +654,55 @@ void CheckIsIn(list*& head, list*& head2)
     cur1 = head;
     cur2 = head2;
 
-
+    bool k = false;
+    int c = 0;
+    int first;
     while (cur1 != nullptr && cur2 != nullptr)
     {
-       
+        c++;
+
         if (cur1->data == cur2->data)
         {
             check++;
             cur2 = cur2->next;
         }
-        else 
+        else
+        {
+            check = 0;
             cur2 = head2;
+        }
 
-        cur1 = cur1->next;       
+        cur1 = cur1->next;
+        if (check == i)
+        {
+            k = true;
+            break;
+        }
+
     }
 
-    if (i == check)
+    if (k)
         cout << "YES";
     else
         cout << "NO";
+    auto end = chrono::high_resolution_clock::now();
+    chrono::nanoseconds duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
+    cout.precision(10);
+    cout << fixed << duration.count() << ", ";
 }
 
 //17
 void FindIndexStart(list*& head, list*& head2)
 {
-    system("cls");
-
-    AnotherList(head2);
-
-    list* cur1 = head;                                //создаем новый узел и присваиваем ему значение головы 1 списка
-    list* cur2 = head2;                             //создаем новый узел и присваиваем ему значение головы 2 списка
+    list* cur1 = head;                               
+    list* cur2 = head2;                            
 
     if (cur1 == nullptr)
     {
         cout << "The list is empty.\n";
         return;
     }
-
+    auto start = chrono::high_resolution_clock::now();
     int i = 0;
     while (cur2 != nullptr)
     {
@@ -594,7 +713,7 @@ void FindIndexStart(list*& head, list*& head2)
     int check = 0;
     cur1 = head;
     cur2 = head2;
-
+    bool k = false;
     int c = 0;
     int first;
     while (cur1 != nullptr && cur2 != nullptr)
@@ -603,33 +722,44 @@ void FindIndexStart(list*& head, list*& head2)
        
         if (cur1->data == cur2->data)
         {  
-            first = c;
-           
+                    
             check++;
             cur2 = cur2->next;
         }
-        else 
+        else
+        {
+            check = 0;
             cur2 = head2;
+        }
   
         cur1 = cur1->next;
+        if (check == i)
+        {
+            k = true;
+            first = c;
+            break;
+        }
         
     }
 
-    if (i == check)
+   if (k)
         cout << "Index of the first entry is   " << first - i + 1;
     else
-        cout << "there's no other lists in current";
+       cout << "there's no other lists in current";
+   auto end = chrono::high_resolution_clock::now();
+   chrono::nanoseconds duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
+   cout.precision(10);
+   cout << fixed << duration.count() << ", ";
 }
 
 //18
 void FindIndexEnd(list*& head,list*& head2)
 {
-    system("cls");
-
+  
     AnotherList(head2);
-
-    list* cur1 = head;                //создаем новый узел и присваиваем ему значение головы 1 списка
-    list* cur2 = head2;                 //создаем новый узел и присваиваем ему значение головы 2 списка
+  
+    list* cur1 = head;              
+    list* cur2 = head2;               
 
     if (cur1 == nullptr)
     {
@@ -637,64 +767,169 @@ void FindIndexEnd(list*& head,list*& head2)
         return;
     }
 
+    auto start = chrono::high_resolution_clock::now();
     int i = 0;
     while (cur2 != nullptr)
     {
+        
         i++;
         cur2 = cur2->next;
     }
-
+ 
     int check = 0;
     cur1 = head;
     cur2 = head2;
- 
+    int p = 0;
     int c = 0;
-    int first;
+    int first = 0;
+    int k = 0;
+
     while (cur1 != nullptr && cur2 != nullptr)
     {
         c++;
-       
+        check = 0;
+      
         if (cur1->data == cur2->data)
         {
-            first = c;
-
             check++;
-            if (c >=  i)
-            {
-               
-                cur2 = head2;
-            } else
-            cur2 = cur2->next;
-        }
-        else {
-           
-          
-            cur2 = head2;
-         
-            
-        }
-        cur1 = cur1->next;
-       
-    }
-    
 
-    if (i < check)
+            while ((cur1->data == cur2->data) && (cur1->next != nullptr) && (cur2->next != nullptr))
+            {
+                check++;
+                cout << check;
+
+                k++;
+                cur1 = cur1->next;
+                cur2 = cur2->next;
+
+                c++;
+
+                if (cur1->data != cur2->data)
+                {
+                    cur2 = head2;
+                    check = 1;
+                }
+            }
+            if (check == i)
+                first = c - i + 1;
+
+            k = 0;
+
+            cur2 = head2;
+            cur1 = cur1->next;
+        }
+
+    }
+
+    cur1 = head;
+
+    if (first!=0)
     {
         cout << "Index of the last entry:   " << first;
-    }else
-    if (i == check)
-    {
-        cout << "Index of the last entry:   " << first - i + 1;
     }
     else
-    {
-        cout << "There's no other list in current.";
-    }
+        if (first != 0)
+        {
+            cout << "Index of the last entry:   " << first;
+        }
+        else
+        {
+            cout << "There's no other list in current.";
+        }  
+
+    auto end = chrono::high_resolution_clock::now();
+    chrono::nanoseconds duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
+    cout.precision(10);
+    cout << fixed << duration.count() << ", ";
 }
 
 
-//19        ////////////////////////////////////////////////////////////////           не сделана
-void Swap(list*& head)
+void Swap(list*& head, int x, int y)
+{
+    list* prevX = NULL;
+    list* curX = head;
+    list* prevY = NULL;
+    list* curY = head;
+
+    auto start = chrono::high_resolution_clock::now();
+
+    for (int i = 1; i < x; i++)
+    {
+        curX = curX->next;
+        if (curX == nullptr)
+        {
+            cout << "There's no element with this index";
+
+            return;
+        }
+    }
+
+    for (int i = 1; i < y; i++)
+    {
+        curY = curY->next;
+        if (curY == nullptr)
+        {
+            cout << "There's no element with this index";
+            return;
+        }
+    }
+
+    curX = head;
+    curY = head;
+    if (x == y)
+    {
+        cout << "\nYou entered same indeces! ";
+        return;
+    }
+
+    int i = 1;
+
+    while (i != x) 
+    {
+        i++;
+        prevX = curX;
+        curX = curX->next;
+    }
+
+    int j = 1;
+
+    while (j != y) 
+    {
+        j++;
+        prevY = curY;
+        curY = curY->next;
+    }
+
+ 
+    if (curX == NULL || curY == NULL)
+        return;
+
+   
+    if (prevX != NULL)
+        prevX->next = curY;
+    else 
+        head = curY;
+
+   
+    if (prevY != NULL)
+        prevY->next = curX;
+    else 
+        head = curX;
+
+  
+    list* tmp = curY->next;
+    curY->next = curX->next;
+    curX->next = tmp;
+
+    auto end = chrono::high_resolution_clock::now();
+    chrono::nanoseconds duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
+    cout.precision(10);
+    cout << fixed << duration.count() << ", ";
+
+
+}
+
+void Swap1(list*& head)
 {
     system("cls");
 
@@ -704,9 +939,15 @@ void Swap(list*& head)
 
     list* cur = new list;
     cur = head;
+    list* cur1 = head;
+   list*  cur2 = head;
 
+    list* newnext1 = new list;
+    list* newnext2 = new list;
+
+   
     list* newhead = new list;
-    
+
     int index1;
     int index2;
     cout << "Enter first index:    ";
@@ -715,80 +956,59 @@ void Swap(list*& head)
     cout << "Enter second index:    ";
     cin >> index2;
     
+   
+
+   list*  newnextnext1 = new list;
+    list* newnextnext2 = new list;
     
     for (int i = 0; i < index1-1; i++)
     {
-        tmp1 = tmp1->next;
-    }
-   // tmp1 = cur;
-
-  //  cur = head;
-    for (int i = 0; i < index2-1; i++)
-    {
-        tmp2 = tmp2->next;
-    }
-  //  tmp2 = cur;
-
-
-    c = tmp1;
-    tmp1 = tmp2;
-    tmp2 = c;
-
-    cout << tmp1->data << " " << tmp2->data;
-   // cur = head;
-
-    for (int i = 0; i < index1-1; i++)
-    {
+        cur1 = cur1->next;
         cur = cur->next;
     }
 
-    list* t = new list;
-    t = cur->next;
-     cur->prev->next = tmp1;
-    // t = t->next;
-     cur = t;
+    newnextnext2 = cur1->next;
+    tmp1 = cur1;
+    cur->prev->next = tmp1;
+    newnext1 = cur->prev->next;
+    
+    cur = head;
 
-     cout << cur->data;
+    for (int i = 0; i < index2 - 1; i++)
+    {
+        cur2 = cur2->next;
+        cur = cur->next;
+    }
+    newnextnext1 = cur2->next;
+    cur->prev->next = tmp2;
+    tmp2 = cur2;
+   
+    newnext2 = cur->prev->next;
+
 
     cur = head;
-    for (int i = 0; i < index2-1; i++)
+
+    for (int i = 0; i < index1 - 1; i++)
     {
         cur = cur->next;
     }
-    t = cur->next;
-    cur->prev->next = tmp2;
-    cur->next = t;
-  //  cur->next = tmp2;
-   // cur = cur->next;
-    
+    cout << 0000 << cur->prev->data << 0000;
 
-   // cur = head;
-    
+    cur->prev->next = newnext2;
+    cur = tmp2;
+    cur->next = newnextnext1;
 
+    cur = head;
 
+    for (int i = 0; i < index2 - 1; i++)
+    {
+        cur = cur->next;
+    }
 
-    //tmp1 = head;
-    //tmp2 = last;
-
-    //list* c = new list;
-    //list* order1 = new list;
-    //list* order2 = new list;
-
-    //order1 = tmp1;
-    //order2 = tmp2; 
-    //int b = 1;
-    //while (b < 4)
-    //{
-    //    c = order1;
-    //    order1 = order2;
-    //    order2 = c;
-    //    cout << order2->data;
-    //    tmp1 = tmp1->next;
-    //   // tmp2 = tmp2->prev;
-    //    b++;
-    //    c
-
-    //}
+    cur->prev->next = newnext1;
+    cur = tmp1; 
+    cur->next = newnextnext1;
+  
 }
 
 
