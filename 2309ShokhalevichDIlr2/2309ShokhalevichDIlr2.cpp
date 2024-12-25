@@ -41,7 +41,9 @@ void sidearray (vector<vector<vector<int>>> a, int b[], int size, int x, int y)
 	for (int i = 0; i < size; i++)
 	{
 		b[i] = a[x][y][i];
+		//cout << b[i] << " ";
 	}
+//	cout << "  ---  ";
 }
 void TimSort(int arr[], int n);
 
@@ -112,14 +114,19 @@ void BubbleSortRev(int b[], int size)
 	int tmp;
 
 	for (int i = 0; i < size; i++)
+	//{
 		for (int j = i + 1; j < size; j++)
+		
 			if (b[j] > b[i])
 			{
 				tmp = b[i];
 				b[i] = b[j];
 				b[j] = tmp;
-			}
 
+			}
+		/*cout << b[i] << " ";
+		}
+	cout << "\n\n";*/
 }
 
 void BubbleSort(int b[], int size)
@@ -157,7 +164,9 @@ void BubbleSort1(int b[], int size)
 				b[i] = b[j];
 				b[j] = tmp;
 			}
-	
+	//for (int i = 0; i < size; i++)
+	//	cout << b[i] << " ";
+	//cout << "\n\n";
 }
 
 
@@ -166,14 +175,22 @@ void BubbleSort2(int b[], int size)
 {
 	int tmp;
 
-	for (int i = 20; i < size; i++)
+	for (int i = 2; i < size; i++)
+	
 		for (int j = i + 1; j < size; j++)
 			if (b[j] < b[i])
 			{
+
 				tmp = b[i];
 				b[i] = b[j];
 				b[j] = tmp;
+
 			}
+	/*for (int i = 0; i < size; i++)
+		cout << b[i] << " ";
+	
+
+	cout << "\n\n";*/
 
 }
 
@@ -586,14 +603,15 @@ int main()
 {
 	const int numArrays = 15; 
 	int sizes[] = { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500 }; 
-
+	//int sizes[] = { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 };
+	 
 	int* arrays[numArrays];
 	
 	for (int i = 0; i < numArrays; i++) {
 		arrays[i] = new int[sizes[i]];
 
 		for (int j = 0; j < sizes[i]; j++) {
-			arrays[i][j] = rand();
+			arrays[i][j] = rand()%10;
 
 		}
 		
@@ -682,10 +700,10 @@ int main()
 					ShellSort1(b, sizes[ik]);
 					break;
 				case(7):
-					ShellSort1(b, sizes[ik]);
+					ShellSort2(b, sizes[ik]);
 					break;
 				case(8):
-					ShellSort1(b, sizes[ik]);
+					ShellSort3(b, sizes[ik]);
 					break;
 
 				case(9):
@@ -749,10 +767,10 @@ int main()
 					ShellSort1(b, sizes[ik]);
 					break;
 				case(7):
-					ShellSort1(b, sizes[ik]);
+					ShellSort2(b, sizes[ik]);
 					break;
 				case(8):
-					ShellSort1(b, sizes[ik]);
+					ShellSort3(b, sizes[ik]);
 					break;
 
 				case(9):
@@ -814,10 +832,10 @@ int main()
 					ShellSort1(b, sizes[ik]);
 					break;
 				case(7):
-					ShellSort1(b, sizes[ik]);
+					ShellSort2(b, sizes[ik]);
 					break;
 				case(8):
-					ShellSort1(b, sizes[ik]);
+					ShellSort3(b, sizes[ik]);
 					break;
 
 				case(9):
@@ -875,10 +893,10 @@ int main()
 					ShellSort1(b, sizes[ik]);
 					break;
 				case(7):
-					ShellSort1(b, sizes[ik]);
+					ShellSort2(b, sizes[ik]);
 					break;
 				case(8):
-					ShellSort1(b, sizes[ik]);
+					ShellSort3(b, sizes[ik]);
 					break;
 
 				case(9):
